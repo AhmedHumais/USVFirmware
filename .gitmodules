@@ -1,4 +1,4 @@
-[submodule "mavlink/include/mavlink/v2.0"]
+[submodule "src/lib/HEAR2"]
 	path = src/lib/HEAR2
 	url = https://github.com/AhmedHumais/HEAR2.git
 	branch = master
