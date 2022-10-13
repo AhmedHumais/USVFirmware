@@ -22,14 +22,14 @@ struct UsvRCcalibParams{
 class UsvRadioController : public Block{
 private:
     InputPort<std::vector<int>>* rc_command_port;
-    OutputPort<std::vector<int>>* cmd_port;
+    OutputPort<std::vector<float>>* cmd_port;
     std::vector<uint8_t> channel_map = {0, 1};
     std::vector<int> rc_in = {0, 0};
     UsvRCcalibParams _calib_params;
     const int MAX_CHAN = 14;
     int RC_MAX = 2000, RC_MIN=1000, RC_MID=1500;
     bool start_calib = false, stop_calib = false, calibrate_rc = false;
-    std::vector<int> map_rc();
+    std::vector<float> map_rc();
     void calibrateRC();
 
     float f_min = 1150, f_max= 2000, f_mid = 1500;
@@ -53,7 +53,7 @@ public:
         _calib_params.mid[0] = f_mid; _calib_params.mid[1] = y_mid;
         _calib_params.min[0] = f_min; _calib_params.min[1] = y_min;
     }
-    void constrain(int &val,const int &min, const int &max) {
+    void constrain(float &val,const float &min, const float &max) {
         if (val > max) {
             val = max;
         }
@@ -61,6 +61,9 @@ public:
             val = min;
         }
     }
+    // int change_range(int val, int multiplier, int offset){
+    //     return val*multiplier+offset;
+    // }
     UsvRadioController(int b_uid);
     ~UsvRadioController(){}
     void process();

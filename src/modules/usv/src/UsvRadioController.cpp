@@ -4,7 +4,7 @@ namespace HEAR{
 
 UsvRadioController::UsvRadioController(int b_uid) : Block(BLOCK_ID::RADIO_CONTROLLER, b_uid){
     rc_command_port = createInputPort<std::vector<int>>(IP::RC_COMMAND, "RC_COMMAND");
-    cmd_port = createOutputPort<std::vector<int>>(OP::THRUST_CMD, "THRUST_CMD");
+    cmd_port = createOutputPort<std::vector<float>>(OP::THRUST_CMD, "THRUST_CMD");
 }
 
 void UsvRadioController::process(){
@@ -26,8 +26,8 @@ void UsvRadioController::process(){
     cmd_port->write(this->map_rc());
 }
 
-std::vector<int> UsvRadioController::map_rc(){
-    std::vector<int> _cmd(2, 0);
+std::vector<float> UsvRadioController::map_rc(){
+    std::vector<float> _cmd(2, 0);
     float f = rc_in[channel_map[CHANNEL_NAME::FWD]];
     float y = rc_in[channel_map[CHANNEL_NAME::YAW]];
 
@@ -39,13 +39,16 @@ std::vector<int> UsvRadioController::map_rc(){
     }
     this->constrain(_cmd[0], -1, 1);
 
-    _cmd[1] = y - y_mid;
+    _cmd[1] = y - _calib_params.mid[1];
     if((_cmd[1] >= 0)){
         _cmd[1] = _cmd[1]/(_calib_params.max[1]-_calib_params.mid[1]);
     } else{ 
         _cmd[1] = _cmd[1]/(_calib_params.mid[1]-_calib_params.min[1]);
     }
     this->constrain(_cmd[1], -1, 1);
+
+    // _cmd[0] = change_range(_cmd[0], 1000, 1000);
+    // _cmd[1] = change_range(_cmd[1], 1000, 1000);
 
     return _cmd;
 }
