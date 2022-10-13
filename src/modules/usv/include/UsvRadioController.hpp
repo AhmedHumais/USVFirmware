@@ -37,7 +37,7 @@ private:
 
 public:
     enum IP{RC_COMMAND};
-    enum OP{THRUST_CMD, TORQUES_CMD};
+    enum OP{CONTROL_CMD};
     void setChanMap(uint8_t fwd_chan, uint8_t yaw_chan){
         if(fwd_chan> MAX_CHAN || yaw_chan > MAX_CHAN){
             return;

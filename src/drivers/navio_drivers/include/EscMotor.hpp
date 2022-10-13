@@ -1,5 +1,5 @@
-#ifndef ACTUATIONSYSTEM_HPP
-#define ACTUATIONSYSTEM_HPP
+#ifndef ESCMOTOR_HPP
+#define ESCMOTOR_HPP
 
 #include <unistd.h>
 #include <memory>
