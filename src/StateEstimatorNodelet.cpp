@@ -9,10 +9,13 @@ namespace HEAR
     {
         delete sys;
     }
-    void StateEstimatorNodelet::run_sys()
+    void StateEstimatorNodelet::run_sys(rclcpp::Node::SharedPtr node_ptr)
     {
-        sys = new RosSystem(this->shared_from_this(), FREQUENCY, "State Estimation System");
+        std::cout << "system creating ..." << std::endl;
 
+        sys = new RosSystem(node_ptr, FREQUENCY, "State Estimation System");
+
+        std::cout << "system created" << std::endl;
         providers = new ROSUnit_PoseProvider(this->shared_from_this());
         auto opti_pos_port = sys->createExternalInputPort<Vector3D<float>>("Pos_port");
         auto opti_vel_port = sys->createExternalInputPort<Vector3D<float>>("Vel_port");
@@ -44,7 +47,7 @@ namespace HEAR
         sys->createPub(TYPE::Float3, "/imu/ori", ((Block *)ori_port)->getOutputPort<Vector3D<float>>(0));
 
 #else
-
+        std::cout << "creating IMU" << std::endl;
         auto imu_navio = new Navio2Imu(0, FREQUENCY);
         // auto rotate = new FromHorizon(0);
         // auto rot_ang = sys->createBlock(BLOCK_ID::CONSTANT, "IMU offset angle", TYPE::Float);((Constant<float>*)rot_ang)->setValue(-M_PI_2);
@@ -64,6 +67,7 @@ namespace HEAR
         sys->createPub(TYPE::Float3, "/navio/gyro", imu_navio->getOutputPort<Vector3D<float>>(Navio2Imu::OP::GYRO));
 
         /// Calibrating IMU
+        std::cout << "starting Calibration" << std::endl;
         imu_navio->calibrateIMU();
 ///
 #endif
@@ -86,7 +90,9 @@ namespace HEAR
 int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<HEAR::StateEstimatorNodelet>("state_estimator"));
+    auto node_ptr = std::make_shared<HEAR::StateEstimatorNodelet>("state_estimator");
+    node_ptr->run_sys(node_ptr);
+    rclcpp::spin(node_ptr);
     rclcpp::shutdown();
     return 0;
 }
