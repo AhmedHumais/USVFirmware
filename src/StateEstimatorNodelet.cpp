@@ -9,7 +9,7 @@ namespace HEAR
     {
         delete sys;
     }
-    void StateEstimatorNodelet::onInit()
+    void StateEstimatorNodelet::run_sys()
     {
         sys = new RosSystem(this->shared_from_this(), FREQUENCY, "State Estimation System");
 

@@ -11,14 +11,14 @@ class StateEstimatorNodelet : public rclcpp::Node{
 
 public:
     StateEstimatorNodelet(std::string node_name) : Node(node_name){
-
+        this->run_sys();
     }
     ~StateEstimatorNodelet();
 
 private:
     const int FREQUENCY = 200;
 
-    virtual void onInit();
+    void run_sys();
     
     RosSystem* sys;
     ROSUnit_PoseProvider* providers; 
