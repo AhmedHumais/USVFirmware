@@ -11,6 +11,8 @@
 #include "HEAR_core/Vector3D.hpp"
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 namespace HEAR{
 
@@ -37,6 +39,7 @@ private:
         gy  -= gyroOffset[1];
         gz  -= gyroOffset[2];
     }
+    Vector3D<float> ToEulerAngles(Quaternion q);
 
 public:
     enum OP{RPY, GYRO, ACC};
@@ -55,8 +58,6 @@ public:
         accOffset[1] = y;
         accOffset[2] = z;
     }
-
-    Vector3D<float> ToEulerAngles(Quaternion q);
 
 };
 

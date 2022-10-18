@@ -30,9 +30,10 @@ void Navio2Imu::process(){
         Vector3D<float> ang_rates(gy, -gx, gz);
         Vector3D<float> acceleration(ay, -ax, az);
 
-        quat_port->write(ToEulerAngles(filter->quat));
+        rpy_port->write(this->ToEulerAngles(filter->quat));
         gyro_port->write(ang_rates);
         acc_port->write(acceleration);
+        
     }
 }
 
@@ -42,7 +43,6 @@ void Navio2Imu::calibrateIMU(){
         float sum_gyro[3] = {0, 0, 0};
         float sum_acc[3] = {0, 0, 0};
         float dt = 1.0/_fs;
-        ros::Rate looprt(_fs);
         for (int i=0; i < 5000; i++){
             sensor->update();
             sensor->read_accelerometer(&ax, &ay, &az);
@@ -50,7 +50,7 @@ void Navio2Imu::calibrateIMU(){
             
             sum_acc[0] += ax*dt; sum_acc[1] += ay*dt; sum_acc[2] += az*dt;
             sum_gyro[0] += gx*dt; sum_gyro[1] += gy*dt; sum_gyro[2] += gz*dt;
-            looprt.sleep();
+            std::this_thread::sleep_for(std::chrono::duration<double>(dt));
         }
         float sc = 5000*dt;
         float bias_gx = sum_gyro[0]/sc;
@@ -68,7 +68,7 @@ void Navio2Imu::calibrateIMU(){
     }
 }
 
-Vector3D<float> ToEulerAngles(Quaternion q) {
+Vector3D<float> Navio2Imu::ToEulerAngles(Quaternion q) {
     Vector3D<float> angles;
 
     // roll (x-axis rotation)
