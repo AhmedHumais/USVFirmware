@@ -4,14 +4,11 @@ namespace HEAR{
 
 UsvRadioController::UsvRadioController(int b_uid) : Block(BLOCK_ID::RADIO_CONTROLLER, b_uid){
     rc_command_port = createInputPort<std::vector<int>>(IP::RC_COMMAND, "RC_COMMAND");
-    cmd_port = createOutputPort<std::vector<float>>(OP::THRUST_CMD, "THRUST_CMD");
+    cmd_port = createOutputPort<std::vector<float>>(OP::CONTROL_CMD, "CONTROL_CMD");
 }
 
 void UsvRadioController::process(){
     rc_command_port->read(rc_in);
-    if(calibrate_rc){
-        this->calibrateRC();
-    }
     if(stop_calib){
         if( (f_max <= f_mid+100) || (y_max <= y_mid+100)){
             std::cout << "Calibration unsuccessful"<<std::endl;
@@ -23,7 +20,20 @@ void UsvRadioController::process(){
         std::cout << "Yaw trim: " << y_min << ", " << y_mid << ", " << y_max <<std::endl;        
         stop_calib = false;
     }
-    cmd_port->write(this->map_rc());
+    if(calibrate_rc){
+        if(start_calib){
+            std::cout << "starting Calibration" <<std::endl;
+            f_mid = rc_in[channel_map[CHANNEL_NAME::FWD]];
+            y_mid = rc_in[channel_map[CHANNEL_NAME::YAW]];
+            f_max = f_mid + 100; f_min = f_mid - 100;
+            y_max = y_mid + 100; y_min = f_mid - 100;
+            start_calib = false;
+        }
+        this->calibrateRC();
+    }
+    else{
+        cmd_port->write(this->map_rc());
+    }
 }
 
 std::vector<float> UsvRadioController::map_rc(){
@@ -37,7 +47,6 @@ std::vector<float> UsvRadioController::map_rc(){
     } else{ 
         _cmd[0] = _cmd[0]/(_calib_params.mid[0]-_calib_params.min[0]);
     }
-    this->constrain(_cmd[0], -1, 1);
 
     _cmd[1] = y - _calib_params.mid[1];
     if((_cmd[1] >= 0)){
@@ -45,6 +54,9 @@ std::vector<float> UsvRadioController::map_rc(){
     } else{ 
         _cmd[1] = _cmd[1]/(_calib_params.mid[1]-_calib_params.min[1]);
     }
+
+
+    this->constrain(_cmd[0], -1, 1);
     this->constrain(_cmd[1], -1, 1);
 
     // _cmd[0] = change_range(_cmd[0], 1000, 1000);
@@ -54,14 +66,7 @@ std::vector<float> UsvRadioController::map_rc(){
 }
 
 void UsvRadioController::calibrateRC(){
-    if(start_calib){
-        std::cout << "starting Calibration" <<std::endl;
-        f_mid = rc_in[channel_map[CHANNEL_NAME::FWD]];
-        y_mid = rc_in[channel_map[CHANNEL_NAME::YAW]];
-        f_max = f_mid + 100; f_min = f_mid - 100;
-        y_max = y_mid + 100; y_min = f_mid - 100;
-        start_calib = false;
-    }
+    
     rc_in[channel_map[CHANNEL_NAME::FWD]] > f_max? f_max = rc_in[channel_map[CHANNEL_NAME::FWD]] : 0; 
     rc_in[channel_map[CHANNEL_NAME::FWD]] < f_min? f_min = rc_in[channel_map[CHANNEL_NAME::FWD]] : 0;
 
@@ -75,6 +80,7 @@ void UsvRadioController::update(UpdateMsg* u_msg){
         calibrate_rc = ((BoolMsg*)u_msg)->data;
         if(calibrate_rc) {
             start_calib = true;
+            stop_calib = false;
         }
         else{
             stop_calib = true;

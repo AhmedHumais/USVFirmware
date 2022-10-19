@@ -5,6 +5,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/HEAR_ROS2)
 
 add_subdirectory(src/lib/USV_Arch)
 add_subdirectory(src/drivers/navio_drivers)
+add_subdirectory(src/modules/usv)
 
 include(hear_ros2)
 
