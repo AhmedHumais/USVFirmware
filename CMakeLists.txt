@@ -27,9 +27,7 @@ target_link_libraries(${PROJECT_NAME} usv_arch)
 add_executable(state_est_node src/StateEstimatorNodelet.cpp)
 ament_target_dependencies(state_est_node
   ${HEAR_ROS2_AMENT_DEPS}
-  usv_arch
   ${PROJECT_NAME}
-  navio_drivers
 )
 target_link_libraries(state_est_node usv_arch navio_drivers ${PROJECT_NAME})
 
