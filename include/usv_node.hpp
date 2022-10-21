@@ -3,6 +3,7 @@
 
 #include "HEAR_ROS2/RosSystem.hpp"
 #include "UsvModules.hpp"
+#include "NavioDrivers.hpp"
 
 namespace HEAR{
 

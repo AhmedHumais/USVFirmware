@@ -13,6 +13,7 @@ include_directories(
   ${usv_arch_INCLUDE_DIRS}
   ${navio_drivers_INCLUDE_DIRS}
   ${HEAR_ROS2_INCLUDE_DIR}
+  ${usv_INCLUDE_DIRS}
   include
 )
 
@@ -30,6 +31,12 @@ ament_target_dependencies(state_est_node
 )
 target_link_libraries(state_est_node usv_arch navio_drivers ${PROJECT_NAME})
 
+add_executable(usv_node src/usv_node.cpp)
+ament_target_dependencies(usv_node
+  ${HEAR_ROS2_AMENT_DEPS}
+)
+target_link_libraries(usv_node usv_arch navio_drivers ${PROJECT_NAME} usv)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
@@ -43,6 +50,7 @@ endif()
 
 install(TARGETS
   state_est_node
+  usv_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

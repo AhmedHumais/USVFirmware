@@ -1,3 +1,6 @@
+#ifndef __USV_UTILS_H__
+#define __USV_UTILS_H__
+
 #include "HEAR_core/DataTypes.hpp"
 
 namespace HEAR{
@@ -38,3 +41,4 @@ public:
 };
 
 }
+#endif // __USV_UTILS_H__

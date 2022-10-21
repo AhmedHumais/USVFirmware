@@ -12,8 +12,6 @@ class UsvDriver : public Block {
 protected: 
     Timer _hb_timer;
     int _hb_tol_ms = 1000;
-    bool _hb_enabled = true;
-    bool _armed = false;
     float _u[2]; //[fwd, yaw]
     int prev_hb_val = 0;
     std::vector<int> th_cmds;
@@ -39,6 +37,8 @@ public:
     enum IP{CONTROL_CMD, HB};
     enum OP{RIGHT_TH_CMD, LEFT_TH_CMD};
     void process();
+    bool _hb_enabled = true;
+    bool _armed = false;
     void setHbTol(int hb_tol_ms){
         _hb_tol_ms = hb_tol_ms;
     }

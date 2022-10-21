@@ -2,3 +2,5 @@
 #include "UsvDriver.hpp"
 #include "UsvRadioController.hpp"
 #include "RCManualOverride.hpp"
+#include "GenericInvertedSwitch.hpp"
+#include "GenericInvertedSwitch.hpp"

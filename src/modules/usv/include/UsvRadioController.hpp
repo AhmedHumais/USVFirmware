@@ -1,5 +1,5 @@
-#ifndef RADIOCONTROLLER_HPP
-#define RADIOCONTROLLER_HPP
+#ifndef __USVRADIOCONTROLLER_H__
+#define __USVRADIOCONTROLLER_H__
 
 #include "HEAR_core/Block.hpp"
 #include "usv_utils.hpp"
@@ -73,4 +73,5 @@ public:
 
 }
 
-#endif
+
+#endif // __USVRADIOCONTROLLER_H__

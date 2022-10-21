@@ -35,6 +35,7 @@ void UsvDriver::process() {
         }
         if ( _hb_timer.tockMilliSeconds() > _hb_tol_ms){
             _armed = false;
+            std::cout << "Heartbeat enabled but not receiving heart beat" << std::endl;
         }
     }
     std::vector<float> u_cmd;
