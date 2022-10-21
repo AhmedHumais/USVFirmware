@@ -2,7 +2,7 @@
 
 namespace HEAR{
 
-UsvDriver::UsvDriver(BLOCK_ID block_id, int b_uid) : Block(block_id, b_uid){
+UsvDriver::UsvDriver(int b_uid) : Block(BLOCK_ID::GENERIC, b_uid){
     _cmd_port = createInputPort<std::vector<float>>(IP::CONTROL_CMD, "CONTROL_CMD");
     _hb_port = createInputPort<int>(IP::HB, "HB");
     right_th_cmd_port = createOutputPort<int>(OP::RIGHT_TH_CMD, "RIGHT_TH_CMD");

@@ -39,7 +39,6 @@ public:
     enum IP{CONTROL_CMD, HB};
     enum OP{RIGHT_TH_CMD, LEFT_TH_CMD};
     void process();
-    virtual void init(const int) = 0;
     void setHbTol(int hb_tol_ms){
         _hb_tol_ms = hb_tol_ms;
     }
@@ -52,7 +51,7 @@ public:
     }
     void update(UpdateMsg* u_msg) override;
     void setESCValues(int, int, int);
-    UsvDriver(BLOCK_ID, int);
+    UsvDriver(int b_uid);
     ~UsvDriver(){}
 }; 
 

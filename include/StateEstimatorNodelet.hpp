@@ -5,7 +5,6 @@
 
 #include <iostream>
 
-#define BIG_HEXA
 
 namespace HEAR
 {
