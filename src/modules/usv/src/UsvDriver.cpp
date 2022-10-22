@@ -40,6 +40,9 @@ void UsvDriver::process() {
     }
     std::vector<float> u_cmd;
     _cmd_port->read(u_cmd);
+    if(u_cmd.size() < 2){
+        u_cmd = std::vector<float>(2,0);
+    }
     _u[0] = u_cmd[0]; 
     _u[1] = u_cmd[1];
     if(_armed){
@@ -81,8 +84,8 @@ void UsvDriver::command(){
         offset = _commands[1] + 1;
     }
 
-    th_cmds[0] = this->change_range(_commands[0]-offset, 1000, 1000);
-    th_cmds[1] = this->change_range(_commands[1]-offset, 1000, 1000);
+    th_cmds[0] = this->change_range(_commands[0]-offset, 1000, _escMid);
+    th_cmds[1] = this->change_range(_commands[1]-offset, 1000, _escMid);
 }
 
 void UsvDriver::setESCValues(int t_min, int t_mid, int t_max) {

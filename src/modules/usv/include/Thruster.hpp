@@ -30,6 +30,10 @@ public:
     void init();
     void process();
     void update(UpdateMsg* u_msg) override;
+    void reset() override {
+        initialized = false;
+        this->init();
+    }
 
 };
 

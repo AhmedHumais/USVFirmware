@@ -14,7 +14,7 @@ protected:
     int _hb_tol_ms = 1000;
     float _u[2]; //[fwd, yaw]
     int prev_hb_val = 0;
-    std::vector<int> th_cmds;
+    std::vector<int> th_cmds {1500, 1500};
 
     std::vector<float> _commands {0,0};
     float _geometry[2][2] = {{1,    1},
@@ -42,7 +42,7 @@ public:
     void setHbTol(int hb_tol_ms){
         _hb_tol_ms = hb_tol_ms;
     }
-    int change_range(float val, float multiplier, float offset){
+    int change_range(float val, float multiplier, int offset){
         return val*multiplier+offset;
     }
     void constrain(float &val,const float &min, const float &max) {
