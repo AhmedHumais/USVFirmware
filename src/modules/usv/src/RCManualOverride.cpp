@@ -37,6 +37,7 @@ void RCManualOverride::process(){
         }
     }
     if(rc_override_){
+        std::cout <<"RC Override active" <<std::endl;
         rc_cmd_in_->read(in_cmd_rc);
         control_cmd_out_->write(in_cmd_rc);
     }

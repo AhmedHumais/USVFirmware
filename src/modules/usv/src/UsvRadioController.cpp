@@ -40,6 +40,10 @@ std::vector<float> UsvRadioController::map_rc(){
     std::vector<float> _cmd(2, 0);
     float f = rc_in[channel_map[CHANNEL_NAME::FWD]];
     float y = rc_in[channel_map[CHANNEL_NAME::YAW]];
+    if(f == 0 || y == 0){
+        std::cout << "Invalid RC commands" << std::endl;
+        return _cmd;
+    }
 
     _cmd[0] = f - _calib_params.mid[0];
     if((_cmd[0] >= 0)){

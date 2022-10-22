@@ -55,6 +55,7 @@ void UsvNode::run_sys(rclcpp::Node::SharedPtr node_p){
     sys->connectExternalTrigger(rst_th_trig, th_left_blk);
     sys->connectExternalTrigger(rst_th_trig, th_right_blk);
     sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/enable_auto", manual_sw);
+    sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/calibrate_rc", usv_rc_controller);
 
     sys->start();
 
