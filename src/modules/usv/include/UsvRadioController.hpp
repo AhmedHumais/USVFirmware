@@ -38,6 +38,8 @@ private:
 public:
     enum IP{RC_COMMAND};
     enum OP{CONTROL_CMD};
+    bool reverse_fwd = false;
+    bool reverse_yaw = false;
     void setChanMap(uint8_t fwd_chan, uint8_t yaw_chan){
         if(fwd_chan> MAX_CHAN || yaw_chan > MAX_CHAN){
             return;

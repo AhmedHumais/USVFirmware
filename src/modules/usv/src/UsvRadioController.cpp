@@ -63,6 +63,13 @@ std::vector<float> UsvRadioController::map_rc(){
     this->constrain(_cmd[0], -1, 1);
     this->constrain(_cmd[1], -1, 1);
 
+    if(reverse_fwd){
+        _cmd[0] = (-1)*_cmd[0];
+    }
+    if(reverse_yaw){
+        _cmd[1] = (-1)*_cmd[1];
+    }
+
     // _cmd[0] = change_range(_cmd[0], 1000, 1000);
     // _cmd[1] = change_range(_cmd[1], 1000, 1000);
 
