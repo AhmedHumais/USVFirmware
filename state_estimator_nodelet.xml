@@ -1,0 +1,9 @@
+<library path="libstate_estimator_nodelet">
+    <class name="usv_firmware/StateEstimatorNodelet"
+           type="HEAR::StateEstimatorNodelet"
+           base_class_type="nodelet::Nodelet">
+        <description>
+        Nodelet for State Estimation and sensor interfacing.
+        </description>
+    </class>
+</library>

@@ -1,57 +1,79 @@
 cmake_minimum_required(VERSION 3.5)
-project(USVFirmware)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/HEAR_ROS2)
+cmake_policy(SET CMP0046 OLD)
+
+project(usv_firmware)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/HEAR_ROS)
 
 add_subdirectory(src/lib/USV_Arch)
 add_subdirectory(src/drivers/navio_drivers)
 add_subdirectory(src/modules/usv)
 
-include(hear_ros2)
+include(hear_ros)
+
+catkin_package(
+  INCLUDE_DIRS 
+  LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS
+    std_srvs
+    std_msgs
+    roscpp
+    geometry_msgs
+    tf2
+    tf2_ros
+    tf2_geometry_msgs
+    nodelet
+)
 
 include_directories(
   ${usv_arch_INCLUDE_DIRS}
   ${navio_drivers_INCLUDE_DIRS}
-  ${HEAR_ROS2_INCLUDE_DIR}
+  ${HEAR_ROS_INCLUDE_DIR}
   ${usv_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
   include
 )
 
-add_library(${PROJECT_NAME} ${HEAR_ROS2_SRCs})
-ament_target_dependencies(${PROJECT_NAME} ${HEAR_ROS2_AMENT_DEPS})
-if(EXISTS ${HEAR_ROS2_DEFs})
-  target_compile_definitions(${PROJECT_NAME} ${HEAR_ROS2_DEFs})
-endif()
+add_library(${PROJECT_NAME} ${HEAR_ROS_SRCs})
 target_link_libraries(${PROJECT_NAME} usv_arch)
 
-
-add_executable(state_est_node src/StateEstimatorNodelet.cpp)
-ament_target_dependencies(state_est_node
-  ${HEAR_ROS2_AMENT_DEPS}
-)
-target_link_libraries(state_est_node usv_arch navio_drivers ${PROJECT_NAME})
-
 add_executable(usv_node src/usv_node.cpp)
-ament_target_dependencies(usv_node
-  ${HEAR_ROS2_AMENT_DEPS}
-)
-target_link_libraries(usv_node usv_arch navio_drivers ${PROJECT_NAME} usv)
+add_dependencies(usv_node ${catkin_LIBRARIES})
+target_link_libraries(usv_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # uncomment the line when a copyright and license is not present in all source files
-  #set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # uncomment the line when this package is not in a git repo
-  #set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
+add_executable(state_est_node src/state_est_node.cpp)
+add_dependencies(state_est_node ${catkin_LIBRARIES})
+target_link_libraries(state_est_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-install(TARGETS
-  state_est_node
-  usv_node
-  DESTINATION lib/${PROJECT_NAME}
+add_library(state_estimator_nodelet src/StateEstimatorNodelet.cpp)
+add_dependencies(state_estimator_nodelet ${catkin_EXPORTED_TARGETS})
+target_link_libraries(state_estimator_nodelet
+    ${PROJECT_NAME}
+    ${catkin_LIBRARIES}
+    usv_arch 
+    navio_drivers
 )
 
-ament_package()
+add_library(usv_nodelet src/UsvNodelet.cpp)
+add_dependencies(usv_nodelet ${catkin_EXPORTED_TARGETS})
+target_link_libraries(usv_nodelet
+    ${PROJECT_NAME}
+    ${catkin_LIBRARIES}
+    usv_arch 
+    navio_drivers
+    usv
+)
+
+install(TARGETS usv_nodelet state_estimator_nodelet ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
+
+# install(DIRECTORY include/
+#         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
+install(FILES usv_nodelet.xml state_estimator_nodelet.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)

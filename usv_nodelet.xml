@@ -1,0 +1,9 @@
+<library path="libusv_nodelet">
+    <class name="usv_firmware/UsvNodelet"
+           type="HEAR::UsvNodelet"
+           base_class_type="nodelet::Nodelet">
+        <description>
+        Nodelet for USV controller.
+        </description>
+    </class>
+</library>

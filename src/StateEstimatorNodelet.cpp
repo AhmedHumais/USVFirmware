@@ -1,22 +1,28 @@
+#ifndef __STATEESTIMATORNODELET_H__
+#define __STATEESTIMATORNODELET_H__
+
 
 #include "StateEstimatorNodelet.hpp"
+#include <pluginlib/class_list_macros.h>
 
 //#define XSENS
 
+PLUGINLIB_EXPORT_CLASS(HEAR::StateEstimatorNodelet, nodelet::Nodelet)
+
 namespace HEAR
 {
-    StateEstimatorNodelet::~StateEstimatorNodelet()
-    {
+    StateEstimatorNodelet::~StateEstimatorNodelet(){
         delete sys;
     }
-    void StateEstimatorNodelet::run_sys(rclcpp::Node::SharedPtr node_ptr)
+    void StateEstimatorNodelet::onInit(){
     {
         std::cout << "system creating ..." << std::endl;
 
-        sys = new RosSystem(node_ptr, FREQUENCY, "State Estimation System");
-
-        std::cout << "system created" << std::endl;
-        providers = new ROSUnit_PoseProvider(this->shared_from_this());
+        ros::NodeHandle nh(getNodeHandle());
+        ros::NodeHandle pnh(getPrivateNodeHandle());
+        sys = new RosSystem(nh, pnh, FREQUENCY, "State Estimation System");
+        
+        providers = new ROSUnit_PoseProvider (nh);
         auto opti_pos_port = sys->createExternalInputPort<Vector3D<float>>("Pos_port");
         auto opti_vel_port = sys->createExternalInputPort<Vector3D<float>>("Vel_port");
         auto opti_ori_port = sys->createExternalInputPort<Vector3D<float>>("Ori_port");
@@ -55,7 +61,7 @@ namespace HEAR
         // sys->addBlock(to_rot, "Quat to Rot");
         // sys->addBlock(to_eul, "Rot to Eul");
         sys->addBlock(imu_navio, "Navio IMU");
-        sys->createPub(TYPE::Float3, "/navio/quaternion", imu_navio->getOutputPort<Vector3D<float>>(Navio2Imu::OP::RPY));
+        // sys->createPub(TYPE::Float3, "/navio/quaternion", imu_navio->getOutputPort<Vector3D<float>>(Navio2Imu::OP::RPY));
         // sys->connect(imu_navio->getOutputPort<tf2::Quaternion>(Navio2Imu::OP::QUAT), to_rot->getInputPort<tf2::Quaternion>(Quat2Rot::IP::QUAT));
         // sys->connect(to_rot->getOutputPort<tf2::Matrix3x3>(Quat2Rot::OP::ROT_MAT), to_eul->getInputPort<tf2::Matrix3x3>(Rot2Eul::IP::ROT_MAT));
         // sys->connect(to_eul->getOutputPort<Vector3D<float>>(Rot2Eul::OP::EUL_ANGLES), rotate->getInputPort<Vector3D<float>>(FromHorizon::IP::INP_VEC));
@@ -85,14 +91,8 @@ namespace HEAR
         std::cout << "Created all blocks\n";
     }
 
-} // namespace HEAR
-
-int main(int argc, char *argv[])
-{
-    rclcpp::init(argc, argv);
-    auto node_ptr = std::make_shared<HEAR::StateEstimatorNodelet>("state_estimator");
-    node_ptr->run_sys(node_ptr);
-    rclcpp::spin(node_ptr);
-    rclcpp::shutdown();
-    return 0;
 }
+
+}
+
+#endif // __STATEESTIMATORNODELET_H__
