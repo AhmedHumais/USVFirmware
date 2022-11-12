@@ -18,9 +18,9 @@ void RCManualOverride::process(){
     int rc_val;
     if(rc_raw.size() <= rc_override_chan){
         std::cout << "[ERROR] RC override block not receiving data properly." << std::endl;
-        rc_val = rc_raw[rc_override_chan];
     }
     else{
+        rc_val = rc_raw[rc_override_chan];
         if(!initialized_){
             if(rc_val != 0){
                 last_val = rc_val;
