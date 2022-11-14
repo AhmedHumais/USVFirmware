@@ -84,8 +84,8 @@ void UsvDriver::command(){
         offset = _commands[1] + 1;
     }
 
-    th_cmds[0] = this->change_range(_commands[0]-offset, 1000, _escMid);
-    th_cmds[1] = this->change_range(_commands[1]-offset, 1000, _escMid);
+    th_cmds[0] = this->change_range(_commands[0]-offset, 250, _escMid);
+    th_cmds[1] = this->change_range(_commands[1]-offset, 250, _escMid);
 }
 
 void UsvDriver::setESCValues(int t_min, int t_mid, int t_max) {
