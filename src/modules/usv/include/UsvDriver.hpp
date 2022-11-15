@@ -17,8 +17,8 @@ protected:
     std::vector<int> th_cmds {1500, 1500};
 
     std::vector<float> _commands {0,0};
-    float _geometry[2][2] = {{-1,    -1},
-                             {-1,   1}};
+    float _geometry[2][2] = {{-1,  1},
+                             {1,   1}};
 
 
     InputPort<std::vector<float>>* _cmd_port;
