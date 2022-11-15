@@ -51,8 +51,8 @@ void UsvDriver::process() {
         th_cmds[0] = _escMid;
         th_cmds[1] = _escMid;
     }
-    right_th_cmd_port->write(th_cmds[0]);
-    left_th_cmd_port->write(th_cmds[1]);
+    right_th_cmd_port->write(th_cmds[1]);
+    left_th_cmd_port->write(th_cmds[0]);
 }
 
 void UsvDriver::command(){
