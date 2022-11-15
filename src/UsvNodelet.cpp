@@ -26,8 +26,8 @@ void UsvNodelet::onInit(){
     auto rc_driver = new RCin(3, 12); sys->addBlock(rc_driver, "RC Driver");
     auto usv_rc_controller = new UsvRadioController(4); sys->addBlock(usv_rc_controller, "USV RC Controller");
     usv_rc_controller->setChanMap(1, 0);
-    usv_rc_controller->reverse_fwd = true; 
-    usv_rc_controller->reverse_yaw = true;
+    usv_rc_controller->reverse_fwd = false; 
+    usv_rc_controller->reverse_yaw = false;
     auto rc_override = new RCManualOverride(5); sys->addBlock(rc_override, "RC Override");
     rc_override->setRCoverrideChan(4);
     auto manual_sw = new GenericInvertedSwitch<std::vector<float>>(6); sys->addBlock(manual_sw, "Manual Control Switch");
