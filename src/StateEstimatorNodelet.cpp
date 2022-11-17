@@ -6,6 +6,7 @@
 #include <pluginlib/class_list_macros.h>
 
 //#define XSENS
+//#define MOCAP
 
 PLUGINLIB_EXPORT_CLASS(HEAR::StateEstimatorNodelet, nodelet::Nodelet)
 
@@ -22,6 +23,7 @@ namespace HEAR
         ros::NodeHandle pnh(getPrivateNodeHandle());
         sys = new RosSystem(nh, pnh, FREQUENCY, "State Estimation System");
         
+        #ifdef MOCAP
         providers = new ROSUnit_PoseProvider (nh);
         auto opti_pos_port = sys->createExternalInputPort<Vector3D<float>>("Pos_port");
         auto opti_vel_port = sys->createExternalInputPort<Vector3D<float>>("Vel_port");
@@ -36,6 +38,8 @@ namespace HEAR
         sys->createPub<Vector3D<float>>(TYPE::Float3, "/opti/pos", ((Block *)opti_pos_port)->getOutputPort<Vector3D<float>>(0));
         sys->createPub<Vector3D<float>>(TYPE::Float3, "/opti/vel", ((Block *)opti_vel_port)->getOutputPort<Vector3D<float>>(0));
         sys->createPub<Vector3D<float>>(TYPE::Float3, "/opti/ori", ((Block *)opti_ori_port)->getOutputPort<Vector3D<float>>(0));
+        
+        #endif
 
         auto filt_angle_rate = sys->createBlock(BLOCK_ID::BW_FILT2, "Filt_angle_rate", TYPE::Float3);
         ((BWFilter2<Vector3D<float>> *)filt_angle_rate)->setCoeff(BWFilt2_coeff::coeff_N200C60);

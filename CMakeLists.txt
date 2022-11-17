@@ -46,6 +46,10 @@ add_executable(state_est_node src/state_est_node.cpp)
 add_dependencies(state_est_node ${catkin_LIBRARIES})
 target_link_libraries(state_est_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 
+add_executable(slam_node src/slam_node.cpp)
+add_dependencies(slam_node ${catkin_LIBRARIES})
+target_link_libraries(slam_node ${PROJECT_NAME} ${catkin_LIBRARIES})
+
 add_library(state_estimator_nodelet src/StateEstimatorNodelet.cpp)
 add_dependencies(state_estimator_nodelet ${catkin_EXPORTED_TARGETS})
 target_link_libraries(state_estimator_nodelet

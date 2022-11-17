@@ -3,15 +3,17 @@
 
 using namespace HEAR;
 
+#define SLAM_PUB_FREQ 15
+
 int main(int argc, char **argv){
     ros::init(argc, argv, "slam_node");
 
     ros::NodeHandle nh;
     ros::NodeHandle pnh("~");
-    RosSystem* sys =  new RosSystem(nh, pnh, 30, "SLAM sys");    
+    RosSystem* sys =  new RosSystem(nh, pnh, SLAM_PUB_FREQ, "SLAM sys");    
 
     auto providers_slam = new ROSUnit_SLAM(nh);
-    auto sub_ori = sys->createSub(TYPE::Float3 ,"/Inner_Sys/body_ori");
+    auto sub_ori = sys->createSub(TYPE::Float3 ,"/imu/ori");
     auto sub_pos = sys->createSub(TYPE::Float3 ,"/opti/pos");
     providers_slam->connectInputs(sub_pos->getOutputPort<Vector3D<float>>(), sub_ori->getOutputPort<Vector3D<float>>());
     auto slam_port = providers_slam->registerSLAM("/zedm/zed_node/odom");

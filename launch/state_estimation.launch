@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <node pkg="usv_firmware" type="slam_node" name="usv_slam_node" output="screen">
+        <remap from="/zedm/zed_node/odom" to="/zed_node/odom" />
+    </node>
+    <node pkg="usv_firmware" type="state_est_node" name="imu_node" output="screen" />
+    
+
+</launch>

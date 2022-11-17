@@ -17,7 +17,7 @@ public:
     virtual ~StateEstimatorNodelet();
 
 private:
-    const int FREQUENCY = 200;
+    const int FREQUENCY = 50;
     virtual void onInit();
     
     RosSystem* sys;
