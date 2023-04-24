@@ -14,17 +14,21 @@ protected:
     int _hb_tol_ms = 1000;
     float _u[2]; //[fwd, yaw]
     int prev_hb_val = 0;
-    std::vector<int> th_cmds {1500, 1500};
+    std::vector<int> th_cmds {1500, 1500, 1500, 1500};
 
-    std::vector<float> _commands {0,0};
-    float _geometry[2][2] = {{-1,  1},
-                             {1,   1}};
+    std::vector<float> _commands {0, 0, 0, 0};
+    float _geometry[4][2] = {{1,  1},
+                             {1, -1},
+                             {1,  1},
+                             {1, -1}};
 
 
     InputPort<std::vector<float>>* _cmd_port;
     InputPort<int>* _hb_port;
-    OutputPort<int>* right_th_cmd_port;
-    OutputPort<int>* left_th_cmd_port;
+    OutputPort<int>* rf_th_cmd_port;
+    OutputPort<int>* lf_th_cmd_port;
+    OutputPort<int>* lb_th_cmd_port;
+    OutputPort<int>* rb_th_cmd_port;
 
     int _escMin = 1000;
     int _escMid = 1500;
@@ -35,7 +39,7 @@ protected:
 
 public:
     enum IP{CONTROL_CMD, HB};
-    enum OP{RIGHT_TH_CMD, LEFT_TH_CMD};
+    enum OP{RF_TH_CMD, LF_TH_CMD, LB_TH_CMD, RB_TH_CMD};
     void process();
     bool _hb_enabled = true;
     bool _armed = false;

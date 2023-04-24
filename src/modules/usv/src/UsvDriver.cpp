@@ -5,8 +5,10 @@ namespace HEAR{
 UsvDriver::UsvDriver(int b_uid) : Block(BLOCK_ID::GENERIC, b_uid){
     _cmd_port = createInputPort<std::vector<float>>(IP::CONTROL_CMD, "CONTROL_CMD");
     _hb_port = createInputPort<int>(IP::HB, "HB");
-    right_th_cmd_port = createOutputPort<int>(OP::RIGHT_TH_CMD, "RIGHT_TH_CMD");
-    left_th_cmd_port = createOutputPort<int>(OP::LEFT_TH_CMD, "LEFT_TH_CMD");
+    rf_th_cmd_port = createOutputPort<int>(OP::RF_TH_CMD, "RF_TH_CMD");
+    lf_th_cmd_port = createOutputPort<int>(OP::LF_TH_CMD, "LF_TH_CMD");
+    lb_th_cmd_port = createOutputPort<int>(OP::LB_TH_CMD, "LB_TH_CMD");
+    rb_th_cmd_port = createOutputPort<int>(OP::RB_TH_CMD, "RB_TH_CMD");
     _hb_timer.tick();
 }
 
@@ -50,9 +52,13 @@ void UsvDriver::process() {
     }else{
         th_cmds[0] = _escMid;
         th_cmds[1] = _escMid;
+        th_cmds[2] = _escMid;
+        th_cmds[3] = _escMid;
     }
-    right_th_cmd_port->write(th_cmds[1]);
-    left_th_cmd_port->write(th_cmds[0]);
+    lf_th_cmd_port->write(th_cmds[0]);
+    rf_th_cmd_port->write(th_cmds[1]);
+    rb_th_cmd_port->write(th_cmds[2]);
+    lb_th_cmd_port->write(th_cmds[3]);
 }
 
 void UsvDriver::command(){
@@ -67,25 +73,27 @@ void UsvDriver::command(){
     this->constrain(_u[1], -1, 1);
     
     //Update pulse values
-    for(int i = 0; i < 2; i++){
+    for(int i = 0; i < 4; i++){
         for(int j = 0; j < 2; j++){
             _commands[i] += _geometry[i][j] * _u[j];
         }
     }
 
     float offset = 0;
-    if(_commands[0] > 1){
-        offset = _commands[0] - 1 ;
-    }else if (_commands[0] < -1){
-        offset = _commands[0] + 1;
-    }else if(_commands[1] > 1){
-        offset = _commands[1] - 1;
-    }else if (_commands[1] < -1){
-        offset = _commands[1] + 1;
-    }
+    // if(_commands[0] > 1){
+    //     offset = _commands[0] - 1 ;
+    // }else if (_commands[0] < -1){
+    //     offset = _commands[0] + 1;
+    // }else if(_commands[1] > 1){
+    //     offset = _commands[1] - 1;
+    // }else if (_commands[1] < -1){
+    //     offset = _commands[1] + 1;
+    // }
 
     th_cmds[0] = this->change_range(_commands[0]-offset, 250, _escMid);
     th_cmds[1] = this->change_range(_commands[1]-offset, 250, _escMid);
+    th_cmds[2] = this->change_range(_commands[2]-offset, 250, _escMid);
+    th_cmds[3] = this->change_range(_commands[3]-offset, 250, _escMid);    
 }
 
 void UsvDriver::setESCValues(int t_min, int t_mid, int t_max) {
