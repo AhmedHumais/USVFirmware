@@ -64,7 +64,7 @@ void UsvDriver::process() {
 void UsvDriver::command(){
 
     //TODO split into more methods
-    for(int i = 0; i < 2; i++){
+    for(int i = 0; i < 4; i++){
         _commands[i] = 0.0;
     }
 
